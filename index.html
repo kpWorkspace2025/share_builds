@@ -1,193 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evyan Rider UAT Build</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evyan Rider UAT Builds</title>
 
-    <script>
-        const USERNAME = "evyan";
-        const PASSWORD = "evyan";
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f5f6f8;
+}
 
-        function checkAuth() {
-            const isAuth = sessionStorage.getItem("uat_auth");
-            if (isAuth === "true") {
-                document.getElementById("login").style.display = "none";
-                document.getElementById("content").style.display = "block";
-            }
-        }
+/* LOGIN */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        function login() {
-            const user = document.getElementById("username").value;
-            const pass = document.getElementById("password").value;
+.login-card {
+    background: #fff;
+    padding: 30px;
+    width: 320px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    text-align: center;
+}
 
-            if (user === USERNAME && pass === PASSWORD) {
-                sessionStorage.setItem("uat_auth", "true");
-                document.getElementById("login").style.display = "none";
-                document.getElementById("content").style.display = "block";
-            } else {
-                alert("Invalid credentials");
-            }
-        }
+.login-card h2 {
+    margin-bottom: 20px;
+}
 
-        function logout() {
-            sessionStorage.removeItem("uat_auth");
-            location.reload();
-        }
-    </script>
+.login-card input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
 
-    <style>
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          background: #f1f3f4;
-        }
+.login-btn {
+    width: 100%;
+    padding: 10px;
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-        /* Login */
-        .login-box {
-          max-width: 320px;
-          margin: 120px auto;
-          background: #fff;
-          padding: 24px;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          text-align: center;
-        }
+.login-btn:hover {
+    background: #1557b0;
+}
 
-        .login-box input {
-          width: 100%;
-          padding: 10px;
-          margin: 8px 0;
-          border-radius: 6px;
-          border: 1px solid #ccc;
-        }
+/* MAIN */
+.container {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        .login-btn {
-          width: 100%;
-          padding: 10px;
-          background: #1a73e8;
-          color: #fff;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-        }
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
 
-        .login-btn:hover {
-          background: #1557b0;
-        }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-        /* Main content */
-        .container {
-          max-width: 800px;
-          margin: 30px auto;
-          background: #fff;
-          padding: 24px;
-          border-radius: 16px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+.logo {
+    width: 70px;
+    border-radius: 14px;
+}
 
-        .header {
-          display: flex;
-          align-items: center;
-          gap: 18px;
-          border-bottom: 1px solid #eee;
-          padding-bottom: 15px;
-        }
+.title {
+    font-size: 22px;
+    font-weight: 600;
+}
 
-        .logo {
-          width: 90px;
-          height: 90px;
-          border-radius: 20px;
-        }
+.subtitle {
+    font-size: 13px;
+    color: #777;
+}
 
-        .title {
-          font-size: 24px;
-          font-weight: 600;
-        }
+.logout {
+    font-size: 13px;
+    color: #e53935;
+    cursor: pointer;
+}
 
-        .subtitle {
-          font-size: 14px;
-          color: #6b6b6b;
-        }
+.section-title {
+    margin-top: 25px;
+    font-weight: 600;
+}
 
-        .section-title {
-          margin-top: 25px;
-          font-size: 16px;
-          font-weight: 600;
-        }
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    margin-top: 12px;
+}
 
-        .card {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 16px;
-          border: 1px solid #eee;
-          border-radius: 12px;
-          margin-top: 12px;
-        }
+.version {
+    font-weight: 500;
+}
 
-        .btn {
-          background: #1a73e8;
-          color: #fff;
-          padding: 9px 18px;
-          border-radius: 8px;
-          text-decoration: none;
-        }
+.status {
+    font-size: 12px;
+    color: #777;
+}
 
-        .note {
-          margin-top: 20px;
-          font-size: 13px;
-        }
+.latest {
+    color: #0f9d58;
+    font-weight: 600;
+}
 
-        .logout {
-          float: right;
-          cursor: pointer;
-          color: red;
-          font-size: 13px;
-        }
-    </style>
+.btn {
+    background: #1a73e8;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn:hover {
+    background: #1557b0;
+}
+
+.note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #555;
+}
+</style>
+
+<script>
+const USERNAME = "evyan";
+const PASSWORD = "evyan";
+
+function checkAuth() {
+    if (sessionStorage.getItem("auth") === "true") {
+        showContent();
+    }
+}
+
+function login() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === USERNAME && pass === PASSWORD) {
+        sessionStorage.setItem("auth", "true");
+        showContent();
+    } else {
+        alert("Invalid credentials");
+    }
+}
+
+function showContent() {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("main").style.display = "block";
+}
+
+function logout() {
+    sessionStorage.removeItem("auth");
+    location.reload();
+}
+</script>
 </head>
 
 <body onload="checkAuth()">
 
-<!-- Login -->
-<div id="login" class="login-box">
-    <h3>UAT Login</h3>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button class="login-btn" onclick="login()">Login</button>
+<!-- LOGIN -->
+<div id="login" class="login-container">
+    <div class="login-card">
+        <h2>UAT Access</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="login-btn" onclick="login()">Login</button>
+    </div>
 </div>
 
-<!-- Main Content -->
-<div id="content" style="display:none;">
+<!-- MAIN CONTENT -->
+<div id="main" style="display:none;">
     <div class="container">
 
-        <div class="logout" onclick="logout()">Logout</div>
-
         <div class="header">
-            <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw"
-                 class="logo">
-            <div>
-                <div class="title">Evyan Rider</div>
-                <div class="subtitle">UAT Build Releases</div>
+            <div class="header-left">
+                <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw" class="logo">
+                <div>
+                    <div class="title">Evyan Rider</div>
+                    <div class="subtitle">UAT Build Releases</div>
+                </div>
             </div>
+            <div class="logout" onclick="logout()">Logout</div>
         </div>
 
         <div class="section-title">Available Downloads</div>
 
         <div class="card">
             <div>
-                <div>Version 2.2</div>
-                <div style="color:green;">Latest</div>
+                <div class="version">Version 2.2</div>
+                <div class="status latest">Latest Release</div>
             </div>
             <a class="btn" href="https://drive.google.com/file/d/1ZuFqOqcw80VPOPc-9PBnmwNY2FY4Hz-K/view" target="_blank">Download</a>
         </div>
 
         <div class="card">
             <div>
-                <div>Version 2.1</div>
+                <div class="version">Version 2.1</div>
+                <div class="status">Old</div>
             </div>
             <a class="btn" href="https://drive.google.com/file/d/1HjDQTm_LgYWFqokaD7T2YViGDRxfnLgT/view" target="_blank">Download</a>
+        </div>
+
+        <div class="note">
+            <b>Note:</b> Use only the latest version for testing.
         </div>
 
     </div>
