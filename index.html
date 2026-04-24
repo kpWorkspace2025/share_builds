@@ -18,19 +18,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #1a73e8, #4f8df5);
+    background: #ffffff;
 }
 
 .login-card {
     background: #fff;
     padding: 45px 30px;
     width: 400px;
-    border-radius: 18px;
+    border-radius: 16px;
     text-align: center;
+    border: 1px solid #eee;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 .login-logo {
     width: 90px;
+    height: 90px;
     border-radius: 20px;
     margin-bottom: 15px;
 }
@@ -50,6 +53,8 @@ body {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
 /* MAIN */
@@ -59,6 +64,36 @@ body {
     background: #fff;
     padding: 25px;
     border-radius: 14px;
+    border: 1px solid #eee;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    width: 50px;
+    border-radius: 12px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.logout {
+    cursor: pointer;
+    color: red;
+    font-size: 13px;
 }
 
 .card {
@@ -80,6 +115,7 @@ body {
     color: #fff;
     padding: 6px 12px;
     text-decoration: none;
+    border-radius: 6px;
 }
 </style>
 
@@ -95,6 +131,11 @@ function login(){
     }
 }
 
+function logout(){
+    sessionStorage.clear();
+    location.reload();
+}
+
 function loadApp(){
     document.getElementById("login").style.display="none";
     document.getElementById("main").style.display="block";
@@ -105,7 +146,6 @@ async function renderBuilds(){
     const res = await fetch('builds.json');
     let builds = await res.json();
 
-    // sort latest first
     builds.sort((a,b)=> b.version.localeCompare(a.version, undefined, {numeric:true}));
 
     let list = document.getElementById("buildList");
@@ -136,21 +176,39 @@ window.onload = function(){
 <!-- LOGIN -->
 <div id="login" class="login-container">
     <div class="login-card">
-        <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw" class="login-logo">
+
+        <!-- LOGO -->
+        <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw"
+             class="login-logo">
+
         <div class="login-heading">Evyan Rider Builds</div>
         <div class="login-subheading">UAT Access Portal</div>
 
         <input id="username" placeholder="Username">
         <input id="password" type="password" placeholder="Password">
+
         <button onclick="login()">Login</button>
+
     </div>
 </div>
 
 <!-- MAIN -->
 <div id="main" style="display:none;">
     <div class="container">
-        <h2>Evyan Rider Builds</h2>
+
+        <!-- HEADER WITH LOGO -->
+        <div class="header">
+            <div class="header-left">
+                <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw"
+                     class="header-logo">
+                <div class="title">Evyan Rider Builds</div>
+            </div>
+
+            <div class="logout" onclick="logout()">Logout</div>
+        </div>
+
         <div id="buildList"></div>
+
     </div>
 </div>
 
