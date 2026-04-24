@@ -9,16 +9,46 @@
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #000; /* black background */
+    background: #000;
+    box-sizing: border-box;
 }
 
-/* LOGIN */
+/* ================= LOADER ================= */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    width: 45px;
+    height: 45px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #1a73e8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ================= LOGIN ================= */
 .login-container {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #000; /* black background */
+    background: #000;
+    padding: 12px;
 }
 
 .login-card {
@@ -26,9 +56,8 @@ body {
     padding: 50px 60px;
     width: 380px;
     border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     text-align: center;
+    box-sizing: border-box;
 }
 
 .login-logo {
@@ -41,7 +70,6 @@ body {
 .login-heading {
     font-size: 22px;
     font-weight: 600;
-    margin-bottom: 6px;
 }
 
 .login-subheading {
@@ -55,18 +83,13 @@ body {
     margin-bottom: 15px;
 }
 
-.input-group label {
-    font-size: 13px;
-    margin-bottom: 6px;
-    display: block;
-}
-
 .input-group input {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #d1d5db;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .login-btn {
@@ -80,21 +103,20 @@ body {
     cursor: pointer;
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 .container {
     max-width: 850px;
     margin: 40px auto;
     background: #fff;
     padding: 25px;
     border-radius: 14px;
-    border: 1px solid #eee;
+    box-sizing: border-box;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .header-left {
@@ -114,8 +136,8 @@ body {
 }
 
 .logout {
-    cursor: pointer;
     color: red;
+    cursor: pointer;
     font-size: 13px;
 }
 
@@ -140,61 +162,47 @@ body {
     text-decoration: none;
     border-radius: 6px;
 }
+
+/* ================= MOBILE (UNCHANGED LOGIC) ================= */
+@media (max-width: 600px) {
+
+    body {
+        padding: 12px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 360px;
+        padding: 30px 20px;
+    }
+
+    .container {
+        margin: 0;
+        width: 100%;
+        padding: 16px;
+    }
+
+    .card {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+}
 </style>
 
-<script>
-const USER = {u:"evyan", p:"evyan"};
-
-function login(){
-    if(username.value===USER.u && password.value===USER.p){
-        sessionStorage.setItem("auth","true");
-        loadApp();
-    } else {
-        alert("Invalid login");
-    }
-}
-
-function logout(){
-    sessionStorage.clear();
-    location.reload();
-}
-
-function loadApp(){
-    document.getElementById("login").style.display="none";
-    document.getElementById("main").style.display="block";
-    renderBuilds();
-}
-
-async function renderBuilds(){
-    const res = await fetch('builds.json');
-    let builds = await res.json();
-
-    builds.sort((a,b)=> b.version.localeCompare(a.version, undefined, {numeric:true}));
-
-    let list = document.getElementById("buildList");
-    list.innerHTML = "";
-
-    builds.forEach((b,i)=>{
-        list.innerHTML += `
-        <div class="card">
-            <div>
-                Version ${b.version}
-                ${i===0 ? '<span class="latest"> (Latest)</span>' : ''}
-            </div>
-            <a class="btn" href="${b.link}" target="_blank">Download</a>
-        </div>`;
-    });
-}
-
-window.onload = function(){
-    if(sessionStorage.getItem("auth")){
-        loadApp();
-    }
-}
-</script>
 </head>
 
 <body>
+
+<!-- LOADER -->
+<div id="loader" class="loader-overlay">
+    <div class="loader"></div>
+</div>
 
 <!-- LOGIN -->
 <div id="login" class="login-container">
@@ -207,13 +215,11 @@ window.onload = function(){
         <div class="login-subheading">UAT Access Portal</div>
 
         <div class="input-group">
-            <label>Username</label>
-            <input id="username" type="text" placeholder="Enter username">
+            <input id="username" type="text" placeholder="Username">
         </div>
 
         <div class="input-group">
-            <label>Password</label>
-            <input id="password" type="password" placeholder="Enter password">
+            <input id="password" type="password" placeholder="Password">
         </div>
 
         <button class="login-btn" onclick="login()">Login</button>
@@ -239,6 +245,85 @@ window.onload = function(){
 
     </div>
 </div>
+
+<script>
+const USER = { u: "evyan", p: "evyan" };
+
+function showLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function hideLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
+/* LOGIN */
+function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username === USER.u && password === USER.p) {
+        showLoader();
+
+        setTimeout(() => {
+            sessionStorage.setItem("auth", "true");
+            loadApp();
+        }, 1000);
+
+    } else {
+        alert("Invalid login");
+    }
+}
+
+/* LOGOUT */
+function logout() {
+    sessionStorage.clear();
+    location.reload();
+}
+
+/* LOAD APP */
+function loadApp() {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("main").style.display = "block";
+
+    renderBuilds();
+}
+
+/* BUILD LIST */
+async function renderBuilds() {
+    showLoader();
+
+    const res = await fetch('builds.json');
+    let builds = await res.json();
+
+    builds.sort((a, b) =>
+        b.version.localeCompare(a.version, undefined, { numeric: true })
+    );
+
+    let list = document.getElementById("buildList");
+    list.innerHTML = "";
+
+    builds.forEach((b, i) => {
+        list.innerHTML += `
+        <div class="card">
+            <div>
+                Version ${b.version}
+                ${i === 0 ? '<span class="latest"> (Latest)</span>' : ''}
+            </div>
+            <a class="btn" href="${b.link}" target="_blank">Download</a>
+        </div>`;
+    });
+
+    hideLoader();
+}
+
+/* INIT */
+window.onload = function () {
+    if (sessionStorage.getItem("auth")) {
+        loadApp();
+    }
+}
+</script>
 
 </body>
 </html>
