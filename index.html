@@ -6,11 +6,16 @@
 <title>Evyan Rider Builds</title>
 
 <style>
+/* GLOBAL FIX */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: "Segoe UI", Arial, sans-serif;
     background: #000;
-    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* ================= LOADER ================= */
@@ -57,7 +62,6 @@ body {
     width: 380px;
     border-radius: 16px;
     text-align: center;
-    box-sizing: border-box;
 }
 
 .login-logo {
@@ -89,7 +93,6 @@ body {
     border-radius: 8px;
     border: 1px solid #d1d5db;
     font-size: 14px;
-    box-sizing: border-box;
 }
 
 .login-btn {
@@ -106,13 +109,14 @@ body {
 /* ================= MAIN ================= */
 .container {
     max-width: 850px;
+    width: 100%;
     margin: 40px auto;
     background: #fff;
     padding: 25px;
     border-radius: 14px;
-    box-sizing: border-box;
 }
 
+/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
@@ -141,6 +145,7 @@ body {
     font-size: 13px;
 }
 
+/* CARD */
 .card {
     display: flex;
     justify-content: space-between;
@@ -148,6 +153,7 @@ body {
     margin-top: 10px;
     border: 1px solid #eee;
     border-radius: 8px;
+    align-items: center;
 }
 
 .latest {
@@ -163,38 +169,36 @@ body {
     border-radius: 6px;
 }
 
-/* ================= MOBILE (UNCHANGED LOGIC) ================= */
+/* ================= MOBILE SAFE FIX ================= */
 @media (max-width: 600px) {
 
     body {
         padding: 12px;
     }
 
-    .login-card {
-        width: 100%;
-        max-width: 360px;
-        padding: 30px 20px;
+    /* SAME STRUCTURE — ONLY SPACING CHANGE */
+    .container {
+        max-width: 850px;
+        width: calc(100% - 24px);
+        margin: 20px auto;
+        padding: 20px;
     }
 
-    .container {
-        margin: 0;
+    .login-card {
         width: 100%;
-        padding: 16px;
+        max-width: 380px;
+        padding: 35px 25px;
     }
 
     .card {
-        flex-direction: column;
-        gap: 10px;
+        padding: 12px;
     }
 
     .btn {
-        width: 100%;
-        text-align: center;
-        padding: 10px;
+        padding: 8px 12px;
     }
 }
 </style>
-
 </head>
 
 <body>
@@ -257,7 +261,6 @@ function hideLoader() {
     document.getElementById("loader").style.display = "none";
 }
 
-/* LOGIN */
 function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -275,21 +278,17 @@ function login() {
     }
 }
 
-/* LOGOUT */
 function logout() {
     sessionStorage.clear();
     location.reload();
 }
 
-/* LOAD APP */
 function loadApp() {
     document.getElementById("login").style.display = "none";
     document.getElementById("main").style.display = "block";
-
     renderBuilds();
 }
 
-/* BUILD LIST */
 async function renderBuilds() {
     showLoader();
 
@@ -317,7 +316,6 @@ async function renderBuilds() {
     hideLoader();
 }
 
-/* INIT */
 window.onload = function () {
     if (sessionStorage.getItem("auth")) {
         loadApp();
