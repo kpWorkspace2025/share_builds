@@ -8,7 +8,7 @@
 <style>
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial;
+    font-family: "Segoe UI", Arial, sans-serif;
     background: #f5f6f8;
 }
 
@@ -23,38 +23,61 @@ body {
 
 .login-card {
     background: #fff;
-    padding: 45px 30px;
-    width: 400px;
+    padding: 50px 35px;
+    width: 380px;
     border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     text-align: center;
-    border: 1px solid #eee;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 .login-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 20px;
-    margin-bottom: 15px;
+    width: 85px;
+    height: 85px;
+    border-radius: 18px;
+    margin-bottom: 20px;
 }
 
 .login-heading {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
+    margin-bottom: 6px;
 }
 
 .login-subheading {
     font-size: 13px;
-    color: #666;
-    margin-bottom: 25px;
+    color: #6b7280;
+    margin-bottom: 28px;
 }
 
-.login-card input {
+.input-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-group input {
     width: 100%;
     padding: 12px;
-    margin: 10px 0;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
 }
 
 /* MAIN */
@@ -69,8 +92,8 @@ body {
 
 .header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -177,17 +200,23 @@ window.onload = function(){
 <div id="login" class="login-container">
     <div class="login-card">
 
-        <!-- LOGO -->
         <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw"
              class="login-logo">
 
         <div class="login-heading">Evyan Rider Builds</div>
         <div class="login-subheading">UAT Access Portal</div>
 
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
+        <div class="input-group">
+            <label>Username</label>
+            <input id="username" type="text" placeholder="Enter username">
+        </div>
 
-        <button onclick="login()">Login</button>
+        <div class="input-group">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Enter password">
+        </div>
+
+        <button class="login-btn" onclick="login()">Login</button>
 
     </div>
 </div>
@@ -196,7 +225,6 @@ window.onload = function(){
 <div id="main" style="display:none;">
     <div class="container">
 
-        <!-- HEADER WITH LOGO -->
         <div class="header">
             <div class="header-left">
                 <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw"
