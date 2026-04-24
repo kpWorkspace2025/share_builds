@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Evyan Rider UAT Builds</title>
+<title>Evyan Rider Builds</title>
 
 <style>
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Segoe UI", Arial;
     background: #f5f6f8;
 }
 
@@ -18,42 +18,38 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(135deg, #1a73e8, #4f8df5);
 }
 
 .login-card {
     background: #fff;
-    padding: 30px;
-    width: 320px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    padding: 45px 30px;
+    width: 400px;
+    border-radius: 18px;
     text-align: center;
 }
 
-.login-card h2 {
-    margin-bottom: 20px;
+.login-logo {
+    width: 90px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.login-heading {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.login-subheading {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 25px;
 }
 
 .login-card input {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 10px;
-    background: #1a73e8;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.login-btn:hover {
-    background: #1557b0;
+    padding: 12px;
+    margin: 10px 0;
 }
 
 /* MAIN */
@@ -63,200 +59,98 @@ body {
     background: #fff;
     padding: 25px;
     border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.logo {
-    width: 70px;
-    border-radius: 14px;
-}
-
-.title {
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.subtitle {
-    font-size: 13px;
-    color: #777;
-}
-
-.logout {
-    font-size: 13px;
-    color: #e53935;
-    cursor: pointer;
-}
-
-.section-title {
-    margin-top: 25px;
-    font-weight: 600;
 }
 
 .card {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 14px;
+    padding: 12px;
+    margin-top: 10px;
     border: 1px solid #eee;
-    border-radius: 10px;
-    margin-top: 12px;
-}
-
-.version {
-    font-weight: 500;
-}
-
-.status {
-    font-size: 12px;
-    color: #777;
+    border-radius: 8px;
 }
 
 .latest {
-    color: #0f9d58;
-    font-weight: 600;
+    color: green;
+    font-weight: bold;
 }
 
 .btn {
     background: #1a73e8;
     color: #fff;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 6px 12px;
     text-decoration: none;
-    font-size: 13px;
-}
-
-.btn:hover {
-    background: #1557b0;
-}
-
-.note {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #555;
 }
 </style>
 
 <script>
-const USERNAME = "evyan";
-const PASSWORD = "evyan";
+const USER = {u:"evyan", p:"evyan"};
 
-function checkAuth() {
-    if (sessionStorage.getItem("auth") === "true") {
-        showContent();
-    }
-}
-
-function login() {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-
-    if (user === USERNAME && pass === PASSWORD) {
-        sessionStorage.setItem("auth", "true");
-        showContent();
+function login(){
+    if(username.value===USER.u && password.value===USER.p){
+        sessionStorage.setItem("auth","true");
+        loadApp();
     } else {
-        alert("Invalid credentials");
+        alert("Invalid login");
     }
 }
 
-function showContent() {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("main").style.display = "block";
+function loadApp(){
+    document.getElementById("login").style.display="none";
+    document.getElementById("main").style.display="block";
+    renderBuilds();
 }
 
-function logout() {
-    sessionStorage.removeItem("auth");
-    location.reload();
+async function renderBuilds(){
+    const res = await fetch('builds.json');
+    let builds = await res.json();
+
+    // sort latest first
+    builds.sort((a,b)=> b.version.localeCompare(a.version, undefined, {numeric:true}));
+
+    let list = document.getElementById("buildList");
+    list.innerHTML = "";
+
+    builds.forEach((b,i)=>{
+        list.innerHTML += `
+        <div class="card">
+            <div>
+                Version ${b.version}
+                ${i===0 ? '<span class="latest"> (Latest)</span>' : ''}
+            </div>
+            <a class="btn" href="${b.link}" target="_blank">Download</a>
+        </div>`;
+    });
+}
+
+window.onload = function(){
+    if(sessionStorage.getItem("auth")){
+        loadApp();
+    }
 }
 </script>
 </head>
 
-<body onload="checkAuth()">
+<body>
 
 <!-- LOGIN -->
 <div id="login" class="login-container">
     <div class="login-card">
-        <h2>UAT Access</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button class="login-btn" onclick="login()">Login</button>
+        <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw" class="login-logo">
+        <div class="login-heading">Evyan Rider Builds</div>
+        <div class="login-subheading">UAT Access Portal</div>
+
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
     </div>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div id="main" style="display:none;">
     <div class="container">
-
-        <div class="header">
-            <div class="header-left">
-                <img src="https://play-lh.googleusercontent.com/FdogNeQVvWNcvf0VCQAyMTYV7J7XR0IWWQlJyycEvFXlcprKiUGlmCuhnBUHp9O51DcBnnTKFQiOe7ocb5oDiw=w480-h960-rw" class="logo">
-                <div>
-                    <div class="title">Evyan Rider</div>
-                    <div class="subtitle">UAT Build Releases</div>
-                </div>
-            </div>
-            <div class="logout" onclick="logout()">Logout</div>
-        </div>
-
-        <div class="section-title">Available Downloads</div>
-
-        <div class="card">
-            <div>
-                <div class="version">Version 2.2</div>
-                <div class="status latest">Latest Release</div>
-            </div>
-            <a class="btn" href="https://drive.google.com/file/d/1ZuFqOqcw80VPOPc-9PBnmwNY2FY4Hz-K/view" target="_blank">Download</a>
-        </div>
-
-        <div class="card">
-            <div>
-                <div class="version">Version 2.1</div>
-                <div class="status">Old</div>
-            </div>
-            <a class="btn" href="https://drive.google.com/file/d/1HjDQTm_LgYWFqokaD7T2YViGDRxfnLgT/view" target="_blank">Download</a>
-        </div>
-
-        <div class="card">
-            <div>
-                <div class="version">Version 2.0</div>
-                <div class="status">Old</div>
-            </div>
-            <a class="btn" href="https://drive.google.com/file/d/1Aupz6_VkmjWSjRdYv2JOeNrKorG5Pl-I/view" target="_blank">Download</a>
-        </div>
-
-        <div class="card">
-            <div>
-                <div class="version">Version 1.1.0+10</div>
-                <div class="status">Old</div>
-            </div>
-            <a class="btn" href="https://drive.google.com/file/d/1ckBXDaIS__2VgUwciebHCBqTGiWXk1Bq/view" target="_blank">Download</a>
-        </div>
-
-        <div class="card">
-            <div>
-                <div class="version">Version 1.9</div>
-                <div class="status">Old</div>
-            </div>
-            <a class="btn" href="https://drive.google.com/file/d/1-oR50vxrraiULjicvuolSL9FaG5EpcVK/view" target="_blank">Download</a>
-        </div>
-
-        <div class="note">
-            <b>Note:</b> Use only the latest version for testing.
-        </div>
-
+        <h2>Evyan Rider Builds</h2>
+        <div id="buildList"></div>
     </div>
 </div>
 
